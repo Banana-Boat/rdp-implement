@@ -7,6 +7,8 @@ const SpecList: SpecificationList = [
   [/^\/\*[\s\S]*?\*\//, null], // 多行注释
 
   [/^;/, TokenType.Semicolon], // 分号
+  [/^{/, TokenType.LeftCurlyBrace], //花括号
+  [/^}/, TokenType.RightCurlyBrace],
 
   [/^\d+/, TokenType.Number],
   [/^"[^"]*"/, TokenType.String],

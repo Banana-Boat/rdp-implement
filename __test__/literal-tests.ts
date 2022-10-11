@@ -40,4 +40,6 @@ export const literalTests = (testFunc: TestFunc) => {
       },
     ],
   });
+
+  console.log("Literal tests passed");
 };

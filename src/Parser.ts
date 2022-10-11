@@ -1,12 +1,5 @@
 import Tokenizer from "./Tokenizer";
-import {
-  Token,
-  TokenType,
-  ASTNodeType,
-  ASTRoot,
-  ASTExpressionNode,
-  ASTNode,
-} from "./types";
+import { Token, TokenType, ASTNodeType, ASTRoot, ASTNode } from "./types";
 
 class Parser {
   _string: string;
@@ -34,19 +27,48 @@ class Parser {
     };
   }
 
-  StatementList(): ASTExpressionNode[] {
+  StatementList(stopLookahead: TokenType | null = null): ASTNode[] {
     const statementList = [this.Statement()];
-    while (this._lookahead !== null) {
+    while (this._lookahead !== null && this._lookahead.type !== stopLookahead) {
       statementList.push(this.Statement());
     }
     return statementList;
   }
 
-  Statement(): ASTExpressionNode {
-    return this.ExpressionStatement();
+  Statement(): ASTNode {
+    switch (this._lookahead?.type) {
+      case TokenType.Semicolon:
+        return this.EmptyStatement();
+      case TokenType.LeftCurlyBrace:
+        return this.BlockStatement();
+      default:
+        return this.ExpressionStatement();
+    }
   }
 
-  ExpressionStatement(): ASTExpressionNode {
+  EmptyStatement(): ASTNode {
+    this._eat(TokenType.Semicolon);
+    return {
+      type: ASTNodeType.EmptyStatement,
+      body: [],
+    };
+  }
+
+  BlockStatement(): ASTNode {
+    this._eat(TokenType.LeftCurlyBrace);
+    const body =
+      this._lookahead?.type !== TokenType.RightCurlyBrace
+        ? this.StatementList(TokenType.RightCurlyBrace)
+        : [];
+    this._eat(TokenType.RightCurlyBrace);
+
+    return {
+      type: ASTNodeType.BlockStatement,
+      body,
+    };
+  }
+
+  ExpressionStatement(): ASTNode {
     const expression = this.Expression();
     this._eat(TokenType.Semicolon);
     return {
