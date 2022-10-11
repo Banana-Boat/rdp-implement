@@ -1,5 +1,12 @@
 import Tokenizer from "./Tokenizer";
-import { AST, ASTNode, ASTNodeType, Token, TokenType } from "./types";
+import {
+  Token,
+  TokenType,
+  ASTNodeType,
+  ASTRoot,
+  ASTExpressionNode,
+  ASTNode,
+} from "./types";
 
 class Parser {
   _string: string;
@@ -20,11 +27,36 @@ class Parser {
     return this.Program();
   }
 
-  Program(): AST {
+  Program(): ASTRoot {
     return {
       type: ASTNodeType.Program,
-      body: this.Literal(),
+      body: this.StatementList(),
     };
+  }
+
+  StatementList(): ASTExpressionNode[] {
+    const statementList = [this.Statement()];
+    while (this._lookahead !== null) {
+      statementList.push(this.Statement());
+    }
+    return statementList;
+  }
+
+  Statement(): ASTExpressionNode {
+    return this.ExpressionStatement();
+  }
+
+  ExpressionStatement(): ASTExpressionNode {
+    const expression = this.Expression();
+    this._eat(TokenType.Semicolon);
+    return {
+      type: ASTNodeType.ExpressionStatement,
+      expression,
+    };
+  }
+
+  Expression(): ASTNode {
+    return this.Literal();
   }
 
   Literal(): ASTNode {

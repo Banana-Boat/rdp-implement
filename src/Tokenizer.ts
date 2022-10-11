@@ -2,9 +2,11 @@ import { SpecificationList, Token, TokenType } from "./types";
 
 // token正则匹配列表（具有顺序！）
 const SpecList: SpecificationList = [
-  [/^\s/, null], // 匹配空格
-  [/^\/\/.*/, null], // 匹配单行注释
-  [/^\/\*[\s\S]*?\*\//, null], // 匹配多行注释
+  [/^\s/, null], // 空格
+  [/^\/\/.*/, null], // 单行注释
+  [/^\/\*[\s\S]*?\*\//, null], // 多行注释
+
+  [/^;/, TokenType.Semicolon], // 分号
 
   [/^\d+/, TokenType.Number],
   [/^"[^"]*"/, TokenType.String],
