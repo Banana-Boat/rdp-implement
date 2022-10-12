@@ -41,6 +41,8 @@ class Parser {
         return this.EmptyStatement();
       case TokenType.LeftCurlyParenthese:
         return this.BlockStatement();
+      case TokenType.VariableDeclarationKeyword:
+        return this.VariableStatement();
       default:
         return this.ExpressionStatement();
     }
@@ -68,6 +70,48 @@ class Parser {
     };
   }
 
+  VariableStatement(): ASTNode {
+    this._eat(TokenType.VariableDeclarationKeyword);
+    const declarations = this.VariableDeclarationList();
+    this._eat(TokenType.Semicolon);
+
+    return {
+      type: ASTNodeType.VariableStatement,
+      declarations,
+    };
+  }
+
+  VariableDeclarationList(): ASTNode[] {
+    const declaraitons: ASTNode[] = [];
+    do {
+      declaraitons.push(this.VariableDeclaration());
+    } while (
+      this._lookahead?.type === TokenType.Comma &&
+      this._eat(TokenType.Comma)
+    );
+    return declaraitons;
+  }
+
+  VariableDeclaration(): ASTNode {
+    const id = this.Identifier();
+    const init =
+      this._lookahead?.type !== TokenType.Comma &&
+      this._lookahead?.type !== TokenType.Semicolon
+        ? this.VariableInitializer()
+        : null;
+
+    return {
+      type: ASTNodeType.VariableDeclaration,
+      id,
+      init,
+    };
+  }
+
+  VariableInitializer(): ASTNode {
+    this._eat(TokenType.SimpleAssignmentOperator);
+    return this.AssignmentExpression();
+  }
+
   ExpressionStatement(): ASTNode {
     const expression = this.Expression();
     this._eat(TokenType.Semicolon);
@@ -92,13 +136,6 @@ class Parser {
       };
 
     return left;
-  }
-
-  _checkIdentifier(node: ASTNode) {
-    if (node.type !== ASTNodeType.Identifier)
-      throw new SyntaxError(`Invalid identifier: ${node.value}`);
-
-    return node;
   }
 
   _isAssignmentOperator(tokenType: TokenType) {
@@ -164,6 +201,13 @@ class Parser {
     const expression = this.Expression();
     this._eat(TokenType.RightParenthese);
     return expression;
+  }
+
+  _checkIdentifier(node: ASTNode): ASTNode {
+    if (node.type !== ASTNodeType.Identifier)
+      throw new SyntaxError(`Invalid identifier: ${node.value}`);
+
+    return node;
   }
 
   Identifier(): ASTNode {

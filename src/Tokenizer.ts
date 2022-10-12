@@ -7,6 +7,7 @@ const SpecList: SpecificationList = [
   [/^\/\*[\s\S]*?\*\//, null], // 多行注释
 
   [/^;/, TokenType.Semicolon], // 分号
+  [/^,/, TokenType.Comma], // 逗号
   [/^{/, TokenType.LeftCurlyParenthese], // 花括号
   [/^}/, TokenType.RightCurlyParenthese],
   [/^\(/, TokenType.LeftParenthese], // 小括号
@@ -17,6 +18,8 @@ const SpecList: SpecificationList = [
 
   [/^=/, TokenType.SimpleAssignmentOperator], // 赋值符
   [/^[\+\-\*\/]=/, TokenType.ComplexAssignmentOperator],
+
+  [/^\blet\b/, TokenType.VariableDeclarationKeyword], // 变量声明关键词 let
 
   [/^\d+/, TokenType.Number], // 数字字面量，必须在标识符前！
 
