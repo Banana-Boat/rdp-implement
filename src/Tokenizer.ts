@@ -12,11 +12,17 @@ const SpecList: SpecificationList = [
   [/^\(/, TokenType.LeftParenthese], // 小括号
   [/^\)/, TokenType.RightParenthese],
 
-  [/^[\+-]/, TokenType.AdditiveOperator], // 加减符号
-  [/^[\*\/]/, TokenType.MultiplicativeOperater], // 乘除符号
+  [/^[\+\-]/, TokenType.AdditiveOperator], // 加减符
+  [/^[\*\/]/, TokenType.MultiplicativeOperater], // 乘除符
 
-  [/^\d+/, TokenType.Number],
-  [/^"[^"]*"/, TokenType.String],
+  [/^=/, TokenType.SimpleAssignmentOperator], // 赋值符
+  [/^[\+\-\*\/]=/, TokenType.ComplexAssignmentOperator],
+
+  [/^\d+/, TokenType.Number], // 数字字面量，必须在标识符前！
+
+  [/^\w+/, TokenType.Identifier], // 标识符
+
+  [/^"[^"]*"/, TokenType.String], // 字符串字面量
   [/^'[^']*'/, TokenType.String],
 ];
 

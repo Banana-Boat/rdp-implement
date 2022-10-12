@@ -6,12 +6,13 @@ import { statementListTests } from "./statement-list-tests";
 import { blockStatementTests } from "./block-statement-tests";
 import { emptyStatementTests } from "./empty-statement.tests";
 import { mathTests } from "./math-tests";
+import { assignmentStatementTests } from "./assignment-statement-tests";
 
 const parser = new Parser();
 
 // 手工测试
 (() => {
-  const program = `3 + 2 - 1;`;
+  const program = `x = y;`;
   const ast = parser.parse(program);
   console.log(JSON.stringify(ast, null, 2));
 })();
@@ -25,6 +26,7 @@ const testList = [
   blockStatementTests,
   emptyStatementTests,
   mathTests,
+  assignmentStatementTests,
 ];
 const testFunc = (program: string, target: ASTRoot) => {
   const ast = parser.parse(program);

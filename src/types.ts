@@ -9,6 +9,9 @@ export enum TokenType {
   RightParenthese = ")",
   AdditiveOperator = "AdditiveOperator",
   MultiplicativeOperater = "MultiplicativeOperater",
+  SimpleAssignmentOperator = "SimpleAssignmentOperator",
+  ComplexAssignmentOperator = "ComplexAssignmentOperator",
+  Identifier = "Identifier",
 }
 
 // token类型定义
@@ -27,9 +30,11 @@ export enum ASTNodeType {
   BlockStatement = "BlockStatement",
   EmptyStatement = "EmptyStatement",
   ExpressionStatement = "ExpressionStatement",
+  AssignmentExpression = "AssignmentExpression",
   BinaryExpression = "BinaryExpression",
   NumericLiteral = "NumericalLiteral",
   StringLiteral = "StringLiteral",
+  Identifier = "Identifier",
 }
 
 // AST普通结点 类型定义
@@ -38,9 +43,9 @@ export type ASTNode = {
   value?: number | string;
   expression?: ASTNode; // ExpressionStatement
   body?: ASTNode[]; // BlockStatement | EmptyStatement
-  left?: ASTNode; // BinaryExpression
-  right?: ASTNode; // BinaryExpression
-  operator?: string; // BinaryExpression
+  left?: ASTNode; // BinaryExpression | AssignmentExpression
+  right?: ASTNode; // BinaryExpression | AssignmentExpression
+  operator?: string; // BinaryExpression | AssignmentExpression
 };
 
 // AST根结点 类型定义

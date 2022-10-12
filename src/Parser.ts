@@ -78,7 +78,40 @@ class Parser {
   }
 
   Expression(): ASTNode {
-    return this.AdditiveExpression();
+    return this.AssignmentExpression();
+  }
+
+  AssignmentExpression(): ASTNode {
+    const left = this.AdditiveExpression();
+    if (this._isAssignmentOperator(this._lookahead?.type as TokenType))
+      return {
+        type: ASTNodeType.AssignmentExpression,
+        operator: this.AssignmentOperator().value as string,
+        left: this._checkIdentifier(left),
+        right: this.AssignmentExpression(),
+      };
+
+    return left;
+  }
+
+  _checkIdentifier(node: ASTNode) {
+    if (node.type !== ASTNodeType.Identifier)
+      throw new SyntaxError(`Invalid identifier: ${node.value}`);
+
+    return node;
+  }
+
+  _isAssignmentOperator(tokenType: TokenType) {
+    return (
+      tokenType === TokenType.SimpleAssignmentOperator ||
+      tokenType === TokenType.ComplexAssignmentOperator
+    );
+  }
+
+  AssignmentOperator(): Token {
+    if (this._lookahead?.type === TokenType.SimpleAssignmentOperator)
+      return this._eat(TokenType.SimpleAssignmentOperator);
+    else return this._eat(TokenType.ComplexAssignmentOperator);
   }
 
   // AdditiveExpression ｜ MultiplicativeExpression 复用的逻辑
@@ -115,9 +148,15 @@ class Parser {
   }
 
   PrimaryExpression(): ASTNode {
-    if (this._lookahead?.type === TokenType.LeftParenthese)
-      return this.ParethesizedExpression();
-    else return this.Literal();
+    if (this._isLiteral(this._lookahead?.type as TokenType))
+      return this.Literal();
+
+    switch (this._lookahead?.type) {
+      case TokenType.LeftParenthese:
+        return this.ParethesizedExpression();
+      default:
+        return this.Identifier();
+    }
   }
 
   ParethesizedExpression(): ASTNode {
@@ -125,6 +164,18 @@ class Parser {
     const expression = this.Expression();
     this._eat(TokenType.RightParenthese);
     return expression;
+  }
+
+  Identifier(): ASTNode {
+    const token = this._eat(TokenType.Identifier);
+    return {
+      type: ASTNodeType.Identifier,
+      value: token.value,
+    };
+  }
+
+  _isLiteral(tokenType: TokenType) {
+    return tokenType === TokenType.Number || tokenType === TokenType.String;
   }
 
   Literal(): ASTNode {
