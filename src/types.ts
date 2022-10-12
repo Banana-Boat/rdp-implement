@@ -3,8 +3,12 @@ export enum TokenType {
   Number = "Number",
   String = "String",
   Semicolon = ";",
-  LeftCurlyBrace = "{",
-  RightCurlyBrace = "}",
+  LeftCurlyParenthese = "{",
+  RightCurlyParenthese = "}",
+  LeftParenthese = "(",
+  RightParenthese = ")",
+  AdditiveOperator = "AdditiveOperator",
+  MultiplicativeOperater = "MultiplicativeOperater",
 }
 
 // token类型定义
@@ -20,9 +24,10 @@ export type SpecificationList = Specification[];
 // ASTNode 类型枚举
 export enum ASTNodeType {
   Program = "Program",
-  ExpressionStatement = "ExpressionStatement",
   BlockStatement = "BlockStatement",
   EmptyStatement = "EmptyStatement",
+  ExpressionStatement = "ExpressionStatement",
+  BinaryExpression = "BinaryExpression",
   NumericLiteral = "NumericalLiteral",
   StringLiteral = "StringLiteral",
 }
@@ -33,6 +38,9 @@ export type ASTNode = {
   value?: number | string;
   expression?: ASTNode; // ExpressionStatement
   body?: ASTNode[]; // BlockStatement | EmptyStatement
+  left?: ASTNode; // BinaryExpression
+  right?: ASTNode; // BinaryExpression
+  operator?: string; // BinaryExpression
 };
 
 // AST根结点 类型定义

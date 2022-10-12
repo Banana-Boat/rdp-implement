@@ -39,7 +39,7 @@ class Parser {
     switch (this._lookahead?.type) {
       case TokenType.Semicolon:
         return this.EmptyStatement();
-      case TokenType.LeftCurlyBrace:
+      case TokenType.LeftCurlyParenthese:
         return this.BlockStatement();
       default:
         return this.ExpressionStatement();
@@ -55,12 +55,12 @@ class Parser {
   }
 
   BlockStatement(): ASTNode {
-    this._eat(TokenType.LeftCurlyBrace);
+    this._eat(TokenType.LeftCurlyParenthese);
     const body =
-      this._lookahead?.type !== TokenType.RightCurlyBrace
-        ? this.StatementList(TokenType.RightCurlyBrace)
+      this._lookahead?.type !== TokenType.RightCurlyParenthese
+        ? this.StatementList(TokenType.RightCurlyParenthese)
         : [];
-    this._eat(TokenType.RightCurlyBrace);
+    this._eat(TokenType.RightCurlyParenthese);
 
     return {
       type: ASTNodeType.BlockStatement,
@@ -78,7 +78,53 @@ class Parser {
   }
 
   Expression(): ASTNode {
-    return this.Literal();
+    return this.AdditiveExpression();
+  }
+
+  // AdditiveExpression ｜ MultiplicativeExpression 复用的逻辑
+  _BinaryExpression(
+    expressProduction: () => ASTNode,
+    operatorToken: TokenType.AdditiveOperator | TokenType.MultiplicativeOperater
+  ): ASTNode {
+    let left = expressProduction.apply(this);
+    while (this._lookahead?.type === operatorToken) {
+      const operator = this._eat(operatorToken).value as string;
+      const right = expressProduction.apply(this);
+      left = {
+        type: ASTNodeType.BinaryExpression,
+        operator,
+        left,
+        right,
+      };
+    }
+    return left;
+  }
+
+  AdditiveExpression(): ASTNode {
+    return this._BinaryExpression(
+      this.MultiplicativeExpression,
+      TokenType.AdditiveOperator
+    );
+  }
+
+  MultiplicativeExpression(): ASTNode {
+    return this._BinaryExpression(
+      this.PrimaryExpression,
+      TokenType.MultiplicativeOperater
+    );
+  }
+
+  PrimaryExpression(): ASTNode {
+    if (this._lookahead?.type === TokenType.LeftParenthese)
+      return this.ParethesizedExpression();
+    else return this.Literal();
+  }
+
+  ParethesizedExpression(): ASTNode {
+    this._eat(TokenType.LeftParenthese);
+    const expression = this.Expression();
+    this._eat(TokenType.RightParenthese);
+    return expression;
   }
 
   Literal(): ASTNode {

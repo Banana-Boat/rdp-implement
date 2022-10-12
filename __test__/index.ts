@@ -5,12 +5,13 @@ import { literalTests } from "./literal-tests";
 import { statementListTests } from "./statement-list-tests";
 import { blockStatementTests } from "./block-statement-tests";
 import { emptyStatementTests } from "./empty-statement.tests";
+import { mathTests } from "./math-tests";
 
 const parser = new Parser();
 
 // 手工测试
 (() => {
-  const program = `22;`;
+  const program = `3 + 2 - 1;`;
   const ast = parser.parse(program);
   console.log(JSON.stringify(ast, null, 2));
 })();
@@ -23,6 +24,7 @@ const testList = [
   statementListTests,
   blockStatementTests,
   emptyStatementTests,
+  mathTests,
 ];
 const testFunc = (program: string, target: ASTRoot) => {
   const ast = parser.parse(program);
