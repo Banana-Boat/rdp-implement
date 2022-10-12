@@ -12,7 +12,7 @@ export const variableStatementTests = (testFunc: TestFunc) => {
             type: ASTNodeType.VariableDeclaration,
             id: {
               type: ASTNodeType.Identifier,
-              value: "x",
+              name: "x",
             },
             init: {
               type: ASTNodeType.NumericLiteral,
@@ -34,7 +34,7 @@ export const variableStatementTests = (testFunc: TestFunc) => {
             type: ASTNodeType.VariableDeclaration,
             id: {
               type: ASTNodeType.Identifier,
-              value: "x",
+              name: "x",
             },
             init: null,
           },
@@ -42,7 +42,7 @@ export const variableStatementTests = (testFunc: TestFunc) => {
             type: ASTNodeType.VariableDeclaration,
             id: {
               type: ASTNodeType.Identifier,
-              value: "y",
+              name: "y",
             },
             init: {
               type: ASTNodeType.NumericLiteral,
@@ -64,14 +64,14 @@ export const variableStatementTests = (testFunc: TestFunc) => {
             type: ASTNodeType.VariableDeclaration,
             id: {
               type: ASTNodeType.Identifier,
-              value: "x",
+              name: "x",
             },
             init: {
               type: ASTNodeType.AssignmentExpression,
               operator: "=",
               left: {
                 type: ASTNodeType.Identifier,
-                value: "y",
+                name: "y",
               },
               right: {
                 type: ASTNodeType.BinaryExpression,

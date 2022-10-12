@@ -18,7 +18,9 @@ export enum TokenType {
   SimpleAssignmentOperator = "=",
   ComplexAssignmentOperator = "+= -= *= /=",
 
-  VariableDeclarationKeyword = "let",
+  LetKeyword = "let",
+  IfKeyword = "if",
+  ElseKeyword = "else",
 }
 
 // token类型定义
@@ -37,6 +39,7 @@ export enum ASTNodeType {
 
   BlockStatement = "BlockStatement",
   EmptyStatement = "EmptyStatement",
+  IfStatement = "IfStatement",
 
   VariableStatement = "VariableStatement",
   VariableDeclaration = "VariableDeclaration",
@@ -57,10 +60,16 @@ export type ASTNode = {
 
   expression?: ASTNode; // ExpressionStatement
   body?: ASTNode[]; // BlockStatement | EmptyStatement
-  declarations?: ASTNode[]; // VariableStatement
 
+  test?: ASTNode; // IfStatement
+  consequent?: ASTNode; // IfStatement
+  alternate?: ASTNode | null; // IfStatement
+
+  declarations?: ASTNode[]; // VariableStatement
   id?: ASTNode; // VariableDeclaration
   init?: ASTNode | null; // VariableDeclaration
+
+  name?: string; // Identifier
 
   left?: ASTNode; // BinaryExpression | AssignmentExpression
   right?: ASTNode; // BinaryExpression | AssignmentExpression

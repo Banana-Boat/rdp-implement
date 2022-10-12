@@ -19,7 +19,9 @@ const SpecList: SpecificationList = [
   [/^=/, TokenType.SimpleAssignmentOperator], // 赋值符
   [/^[\+\-\*\/]=/, TokenType.ComplexAssignmentOperator],
 
-  [/^\blet\b/, TokenType.VariableDeclarationKeyword], // 变量声明关键词 let
+  [/^\blet\b/, TokenType.LetKeyword], // 关键字 let
+  [/^\bif\b/, TokenType.IfKeyword], // 关键字 if
+  [/^\belse\b/, TokenType.ElseKeyword], // 关键字 else
 
   [/^\d+/, TokenType.Number], // 数字字面量，必须在标识符前！
 

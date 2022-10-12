@@ -41,8 +41,10 @@ class Parser {
         return this.EmptyStatement();
       case TokenType.LeftCurlyParenthese:
         return this.BlockStatement();
-      case TokenType.VariableDeclarationKeyword:
+      case TokenType.LetKeyword:
         return this.VariableStatement();
+      case TokenType.IfKeyword:
+        return this.IfStatement();
       default:
         return this.ExpressionStatement();
     }
@@ -70,8 +72,28 @@ class Parser {
     };
   }
 
+  IfStatement(): ASTNode {
+    this._eat(TokenType.IfKeyword);
+    this._eat(TokenType.LeftParenthese);
+    const test = this.Expression();
+    this._eat(TokenType.RightParenthese);
+    const consequent = this.Statement();
+    let alternate: ASTNode | null = null;
+    if (this._lookahead?.type === TokenType.ElseKeyword) {
+      this._eat(TokenType.ElseKeyword);
+      alternate = this.Statement();
+    }
+
+    return {
+      type: ASTNodeType.IfStatement,
+      test,
+      consequent,
+      alternate,
+    };
+  }
+
   VariableStatement(): ASTNode {
-    this._eat(TokenType.VariableDeclarationKeyword);
+    this._eat(TokenType.LetKeyword);
     const declarations = this.VariableDeclarationList();
     this._eat(TokenType.Semicolon);
 
@@ -214,7 +236,7 @@ class Parser {
     const token = this._eat(TokenType.Identifier);
     return {
       type: ASTNodeType.Identifier,
-      value: token.value,
+      name: token.value as string,
     };
   }
 

@@ -12,14 +12,14 @@ export const assignmentStatementTests = (testFunc: TestFunc) => {
           operator: "=",
           left: {
             type: ASTNodeType.Identifier,
-            value: "x",
+            name: "x",
           },
           right: {
             type: ASTNodeType.AssignmentExpression,
             operator: "=",
             left: {
               type: ASTNodeType.Identifier,
-              value: "y",
+              name: "y",
             },
             right: {
               type: ASTNodeType.BinaryExpression,
