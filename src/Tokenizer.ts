@@ -31,6 +31,9 @@ const SpecList: SpecificationList = [
   [/^\btrue\b/, TokenType.TrueKeyword], // 关键字 true,
   [/^\bfalse\b/, TokenType.FalseKeyword], // 关键字 false
   [/^\bnull\b/, TokenType.NullKeyword], // 关键字 null
+  [/^\bwhile\b/, TokenType.WhileKeyword], // 关键字 while
+  [/^\bdo\b/, TokenType.DoKeyword], // 关键字 do
+  [/^\bfor\b/, TokenType.ForKeyword], // 关键字 for
 
   [/^\d+/, TokenType.Number], // 数字字面量，必须在标识符前！
 

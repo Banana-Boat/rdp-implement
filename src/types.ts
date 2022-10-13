@@ -30,6 +30,9 @@ export enum TokenType {
   TrueKeyword = "true",
   FalseKeyword = "false",
   NullKeyword = "null",
+  WhileKeyword = "while",
+  DoKeyword = "do",
+  ForKeyword = "for",
 }
 
 // token类型定义
@@ -49,6 +52,9 @@ export enum ASTNodeType {
   BlockStatement = "BlockStatement",
   EmptyStatement = "EmptyStatement",
   IfStatement = "IfStatement",
+  ForStatement = "ForStatement",
+  WhileStatement = "WhileStatement",
+  DoWhileStatement = "DoWhileStatement",
 
   VariableStatement = "VariableStatement",
   VariableDeclaration = "VariableDeclaration",
@@ -72,15 +78,17 @@ export type ASTNode = {
   value?: number | string | null;
 
   expression?: ASTNode; // ExpressionStatement
-  body?: ASTNode[]; // BlockStatement | EmptyStatement
+  body?: ASTNode[] | ASTNode; // BlockStatement | EmptyStatement | ForStatement | WhileStatement | DoWhileStatement
 
-  test?: ASTNode; // IfStatement
+  update?: ASTNode | null; // ForStatement
+
+  test?: ASTNode | null; // IfStatement | ForStatement | WhileStatement | DoWhileStatement
   consequent?: ASTNode; // IfStatement
   alternate?: ASTNode | null; // IfStatement
 
   declarations?: ASTNode[]; // VariableStatement
   id?: ASTNode; // VariableDeclaration
-  init?: ASTNode | null; // VariableDeclaration
+  init?: ASTNode | null; // VariableDeclaration | ForStatement
 
   name?: string; // Identifier
 

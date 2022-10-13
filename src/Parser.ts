@@ -41,10 +41,16 @@ class Parser {
         return this.EmptyStatement();
       case TokenType.LeftCurlyParenthese:
         return this.BlockStatement();
-      case TokenType.LetKeyword:
-        return this.VariableStatement();
       case TokenType.IfKeyword:
         return this.IfStatement();
+      case TokenType.WhileKeyword:
+        return this.WhileStatement();
+      case TokenType.DoKeyword:
+        return this.DoWhileStatement();
+      case TokenType.ForKeyword:
+        return this.ForStatement();
+      case TokenType.LetKeyword:
+        return this.VariableStatement();
       default:
         return this.ExpressionStatement();
     }
@@ -90,6 +96,76 @@ class Parser {
       consequent,
       alternate,
     };
+  }
+
+  WhileStatement(): ASTNode {
+    this._eat(TokenType.WhileKeyword);
+    this._eat(TokenType.LeftParenthese);
+    const test = this.Expression();
+    this._eat(TokenType.RightParenthese);
+    const body = this.Statement();
+
+    return {
+      type: ASTNodeType.WhileStatement,
+      test,
+      body,
+    };
+  }
+
+  DoWhileStatement(): ASTNode {
+    this._eat(TokenType.DoKeyword);
+    const body = this.Statement();
+    this._eat(TokenType.WhileKeyword);
+    this._eat(TokenType.LeftParenthese);
+    const test = this.Expression();
+    this._eat(TokenType.RightParenthese);
+
+    return {
+      type: ASTNodeType.DoWhileStatement,
+      test,
+      body,
+    };
+  }
+
+  ForStatement(): ASTNode {
+    this._eat(TokenType.ForKeyword);
+    this._eat(TokenType.LeftParenthese);
+
+    const init =
+      this._lookahead?.type !== TokenType.Semicolon
+        ? this.ForInitializer()
+        : null;
+    this._eat(TokenType.Semicolon);
+    const test =
+      this._lookahead?.type !== TokenType.Semicolon ? this.Expression() : null;
+    this._eat(TokenType.Semicolon);
+    const update =
+      this._lookahead?.type !== TokenType.RightParenthese
+        ? this.Expression()
+        : null;
+
+    this._eat(TokenType.RightParenthese);
+    const body = this.Statement();
+    return {
+      type: ASTNodeType.ForStatement,
+      body,
+      init,
+      test,
+      update,
+    };
+  }
+
+  ForInitializer(): ASTNode {
+    if (this._lookahead?.type === TokenType.LetKeyword) {
+      this._eat(TokenType.LetKeyword);
+      const declarations = this.VariableDeclarationList();
+
+      return {
+        type: ASTNodeType.VariableStatement,
+        declarations,
+      };
+    }
+    return this.Expression();
   }
 
   VariableStatement(): ASTNode {
@@ -284,10 +360,10 @@ class Parser {
     switch (this._lookahead?.type) {
       case TokenType.LeftParenthese:
         return this.ParethesizedExpression();
-      case TokenType.Identifier:
+      default:
         return this.Identifier();
-      default: // 存在疑问！
-        return this.PrimaryExpression();
+      // default: // 存在疑问！
+      //   return this.PrimaryExpression();
     }
   }
 
