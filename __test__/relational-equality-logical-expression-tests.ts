@@ -99,5 +99,5 @@ export const relationalEqualityLogicalExpressionTests = (
     ],
   });
 
-  console.log("RelationalLogicalExpression tests passed");
+  console.log("Relational Equality Logical Expression tests passed");
 };

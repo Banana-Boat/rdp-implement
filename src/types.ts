@@ -22,6 +22,7 @@ export enum TokenType {
   EqualityOperator = "== !=",
   LogicalOrOperator = "||",
   LogicalAndOperator = "&&",
+  LogicalNotOperator = "!",
 
   LetKeyword = "let",
   IfKeyword = "if",
@@ -56,6 +57,7 @@ export enum ASTNodeType {
   AssignmentExpression = "AssignmentExpression",
   BinaryExpression = "BinaryExpression",
   LogicalExpression = "LogicalExpression",
+  UnaryExpression = "UnaryExpression",
 
   NumericLiteral = "NumericalLiteral",
   StringLiteral = "StringLiteral",
@@ -82,9 +84,10 @@ export type ASTNode = {
 
   name?: string; // Identifier
 
-  left?: ASTNode; // BinaryExpression | AssignmentExpression
-  right?: ASTNode; // BinaryExpression | AssignmentExpression
-  operator?: string; // BinaryExpression | AssignmentExpression
+  left?: ASTNode; // BinaryExpression | AssignmentExpression | LogicalExpression
+  right?: ASTNode; // BinaryExpression | AssignmentExpression | LogicalExpression
+  operator?: string; // BinaryExpression | AssignmentExpression | LogicalExpression | UnaryExpression
+  argument?: ASTNode; // UnaryExpression
 };
 
 // AST根结点 类型定义

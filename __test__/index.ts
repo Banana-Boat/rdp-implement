@@ -10,12 +10,13 @@ import { assignmentStatementTests } from "./assignment-statement-tests";
 import { variableStatementTests } from "./variable-statement.tests";
 import { ifStatementTests } from "./if-statement-tests";
 import { relationalEqualityLogicalExpressionTests } from "./relational-equality-logical-expression-tests";
+import { unaryExpressionTests } from "./unary-expression-tests";
 
 const parser = new Parser();
 
 // 手工测试
 (() => {
-  const program = `true || false && x > 1;`;
+  const program = `-x * -x;`;
   const ast = parser.parse(program);
   console.log(JSON.stringify(ast, null, 2));
 })();
@@ -33,6 +34,7 @@ const testList = [
   variableStatementTests,
   ifStatementTests,
   relationalEqualityLogicalExpressionTests,
+  unaryExpressionTests,
 ];
 const testFunc = (program: string, target: ASTRoot) => {
   const ast = parser.parse(program);

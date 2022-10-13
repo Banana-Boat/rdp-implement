@@ -252,9 +252,29 @@ class Parser {
 
   MultiplicativeExpression(): ASTNode {
     return this._BinaryExpression(
-      this.PrimaryExpression,
+      this.UnaryExpression,
       TokenType.MultiplicativeOperater
     );
+  }
+
+  UnaryExpression(): ASTNode {
+    let operator: string | null = null;
+    switch (this._lookahead?.type) {
+      case TokenType.AdditiveOperator:
+        operator = this._eat(TokenType.AdditiveOperator).value as string;
+        break;
+      case TokenType.LogicalNotOperator:
+        operator = this._eat(TokenType.LogicalNotOperator).value as string;
+        break;
+    }
+    if (operator)
+      return {
+        type: ASTNodeType.UnaryExpression,
+        operator,
+        argument: this.UnaryExpression(),
+      };
+
+    return this.PrimaryExpression();
   }
 
   PrimaryExpression(): ASTNode {
@@ -264,8 +284,10 @@ class Parser {
     switch (this._lookahead?.type) {
       case TokenType.LeftParenthese:
         return this.ParethesizedExpression();
-      default:
+      case TokenType.Identifier:
         return this.Identifier();
+      default: // 存在疑问！
+        return this.PrimaryExpression();
     }
   }
 

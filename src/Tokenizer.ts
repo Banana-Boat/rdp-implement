@@ -20,6 +20,7 @@ const SpecList: SpecificationList = [
   [/^[!=]=/, TokenType.EqualityOperator], // 相等关系符
   [/^&{2}/, TokenType.LogicalAndOperator], // 逻辑与关系符
   [/^\|{2}/, TokenType.LogicalOrOperator], // 逻辑与关系符
+  [/^!/, TokenType.LogicalNotOperator], // 逻辑非关系符
 
   [/^=/, TokenType.SimpleAssignmentOperator], // 赋值符
   [/^[\+\-\*\/]=/, TokenType.ComplexAssignmentOperator],
