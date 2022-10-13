@@ -148,7 +148,7 @@ class Parser {
   }
 
   AssignmentExpression(): ASTNode {
-    const left = this.AdditiveExpression();
+    const left = this.LogicalOrExpression();
     if (this._isAssignmentOperator(this._lookahead?.type as TokenType))
       return {
         type: ASTNodeType.AssignmentExpression,
@@ -173,10 +173,47 @@ class Parser {
     else return this._eat(TokenType.ComplexAssignmentOperator);
   }
 
-  // AdditiveExpression ｜ MultiplicativeExpression 复用的逻辑
+  // LogicalOrExpression | LogicalAndExpression 复用逻辑
+  _LogicalExpression(
+    expressProduction: () => ASTNode,
+    operatorToken: TokenType.LogicalAndOperator | TokenType.LogicalOrOperator
+  ): ASTNode {
+    let left = expressProduction.apply(this);
+    while (this._lookahead?.type === operatorToken) {
+      const operator = this._eat(operatorToken).value as string;
+      const right = expressProduction.apply(this);
+      left = {
+        type: ASTNodeType.LogicalExpression,
+        operator,
+        left,
+        right,
+      };
+    }
+    return left;
+  }
+
+  LogicalOrExpression(): ASTNode {
+    return this._LogicalExpression(
+      this.LogicalAndExpression,
+      TokenType.LogicalOrOperator
+    );
+  }
+
+  LogicalAndExpression(): ASTNode {
+    return this._LogicalExpression(
+      this.EqualityExpression,
+      TokenType.LogicalAndOperator
+    );
+  }
+
+  // EqualityExpression | RelationalExpression | AdditiveExpression ｜ MultiplicativeExpression 复用的逻辑
   _BinaryExpression(
     expressProduction: () => ASTNode,
-    operatorToken: TokenType.AdditiveOperator | TokenType.MultiplicativeOperater
+    operatorToken:
+      | TokenType.AdditiveOperator
+      | TokenType.MultiplicativeOperater
+      | TokenType.RelationalOperator
+      | TokenType.EqualityOperator
   ): ASTNode {
     let left = expressProduction.apply(this);
     while (this._lookahead?.type === operatorToken) {
@@ -190,6 +227,20 @@ class Parser {
       };
     }
     return left;
+  }
+
+  EqualityExpression(): ASTNode {
+    return this._BinaryExpression(
+      this.RelationalExpression,
+      TokenType.EqualityOperator
+    );
+  }
+
+  RelationalExpression(): ASTNode {
+    return this._BinaryExpression(
+      this.AdditiveExpression,
+      TokenType.RelationalOperator
+    );
   }
 
   AdditiveExpression(): ASTNode {
@@ -241,7 +292,13 @@ class Parser {
   }
 
   _isLiteral(tokenType: TokenType) {
-    return tokenType === TokenType.Number || tokenType === TokenType.String;
+    return (
+      tokenType === TokenType.Number ||
+      tokenType === TokenType.String ||
+      tokenType === TokenType.TrueKeyword ||
+      tokenType === TokenType.FalseKeyword ||
+      tokenType === TokenType.NullKeyword
+    );
   }
 
   Literal(): ASTNode {
@@ -250,9 +307,33 @@ class Parser {
         return this.NumericLiteral();
       case TokenType.String:
         return this.StringLiteral();
+      case TokenType.TrueKeyword:
+        return this.BooleanLiteral(TokenType.TrueKeyword);
+      case TokenType.FalseKeyword:
+        return this.BooleanLiteral(TokenType.FalseKeyword);
+      case TokenType.NullKeyword:
+        return this.NullLiteral();
       default:
         throw new SyntaxError("Literal: unexpected literal production");
     }
+  }
+
+  BooleanLiteral(
+    tokenType: TokenType.TrueKeyword | TokenType.FalseKeyword
+  ): ASTNode {
+    const token = this._eat(tokenType);
+    return {
+      type: ASTNodeType.BooleanLiteral,
+      value: token.value,
+    };
+  }
+
+  NullLiteral(): ASTNode {
+    const token = this._eat(TokenType.NullKeyword);
+    return {
+      type: ASTNodeType.NullLiteral,
+      value: null,
+    };
   }
 
   NumericLiteral(): ASTNode {

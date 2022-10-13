@@ -18,9 +18,17 @@ export enum TokenType {
   SimpleAssignmentOperator = "=",
   ComplexAssignmentOperator = "+= -= *= /=",
 
+  RelationalOperator = "< > <= >=",
+  EqualityOperator = "== !=",
+  LogicalOrOperator = "||",
+  LogicalAndOperator = "&&",
+
   LetKeyword = "let",
   IfKeyword = "if",
   ElseKeyword = "else",
+  TrueKeyword = "true",
+  FalseKeyword = "false",
+  NullKeyword = "null",
 }
 
 // token类型定义
@@ -47,16 +55,19 @@ export enum ASTNodeType {
   ExpressionStatement = "ExpressionStatement",
   AssignmentExpression = "AssignmentExpression",
   BinaryExpression = "BinaryExpression",
+  LogicalExpression = "LogicalExpression",
 
   NumericLiteral = "NumericalLiteral",
   StringLiteral = "StringLiteral",
+  BooleanLiteral = "BooleanLiteral",
+  NullLiteral = "NullLiteral",
   Identifier = "Identifier",
 }
 
 // AST普通结点 类型定义
 export type ASTNode = {
   type: ASTNodeType;
-  value?: number | string;
+  value?: number | string | null;
 
   expression?: ASTNode; // ExpressionStatement
   body?: ASTNode[]; // BlockStatement | EmptyStatement

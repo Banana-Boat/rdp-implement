@@ -16,12 +16,20 @@ const SpecList: SpecificationList = [
   [/^[\+\-]/, TokenType.AdditiveOperator], // 加减符
   [/^[\*\/]/, TokenType.MultiplicativeOperater], // 乘除符
 
+  [/^[<>]=?/, TokenType.RelationalOperator], // 不等关系符
+  [/^[!=]=/, TokenType.EqualityOperator], // 相等关系符
+  [/^&{2}/, TokenType.LogicalAndOperator], // 逻辑与关系符
+  [/^\|{2}/, TokenType.LogicalOrOperator], // 逻辑与关系符
+
   [/^=/, TokenType.SimpleAssignmentOperator], // 赋值符
   [/^[\+\-\*\/]=/, TokenType.ComplexAssignmentOperator],
 
   [/^\blet\b/, TokenType.LetKeyword], // 关键字 let
   [/^\bif\b/, TokenType.IfKeyword], // 关键字 if
   [/^\belse\b/, TokenType.ElseKeyword], // 关键字 else
+  [/^\btrue\b/, TokenType.TrueKeyword], // 关键字 true,
+  [/^\bfalse\b/, TokenType.FalseKeyword], // 关键字 false
+  [/^\bnull\b/, TokenType.NullKeyword], // 关键字 null
 
   [/^\d+/, TokenType.Number], // 数字字面量，必须在标识符前！
 
