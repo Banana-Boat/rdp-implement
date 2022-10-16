@@ -72,6 +72,7 @@ export enum ASTNodeType {
   LogicalExpression = "LogicalExpression",
   UnaryExpression = "UnaryExpression",
   MemberExpression = "MemberExpression",
+  CallExpression = "CallExpression",
 
   NumericLiteral = "NumericalLiteral",
   StringLiteral = "StringLiteral",
@@ -87,6 +88,9 @@ export type ASTNode = {
 
   expression?: ASTNode; // ExpressionStatement
   body?: ASTNode[] | ASTNode; // BlockStatement | EmptyStatement | ForStatement | WhileStatement | DoWhileStatement | FunctionDeclaration
+
+  callee?: ASTNode; // CallExpression
+  arguments?: ASTNode[]; // CallExpression
 
   object?: ASTNode; // MemberExpression
   property?: ASTNode; // MemberExpression
@@ -109,7 +113,7 @@ export type ASTNode = {
   left?: ASTNode; // BinaryExpression | AssignmentExpression | LogicalExpression
   right?: ASTNode; // BinaryExpression | AssignmentExpression | LogicalExpression
   operator?: string; // BinaryExpression | AssignmentExpression | LogicalExpression | UnaryExpression
-  argument?: ASTNode | null; // UnaryExpression | FunctionDeclaration
+  argument?: ASTNode | null; // UnaryExpression | ReturnStatement
 };
 
 // AST根结点 类型定义

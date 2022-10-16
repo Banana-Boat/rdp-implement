@@ -406,7 +406,49 @@ class Parser {
         argument: this.UnaryExpression(),
       };
 
-    return this.MemberExpression();
+    return this.CallMemberExpression();
+  }
+
+  CallMemberExpression(): ASTNode {
+    const member = this.MemberExpression();
+
+    if (this._lookahead?.type === TokenType.LeftParenthese)
+      return this._CallExpression(member);
+
+    return member;
+  }
+
+  _CallExpression(callee: ASTNode): ASTNode {
+    let callExpression: ASTNode = {
+      type: ASTNodeType.CallExpression,
+      callee,
+      arguments: this.Arguments(),
+    };
+    if (this._lookahead?.type === TokenType.LeftParenthese)
+      callExpression = this._CallExpression(callExpression);
+
+    return callExpression;
+  }
+
+  Arguments(): ASTNode[] {
+    this._eat(TokenType.LeftParenthese);
+    const argumentList =
+      this._lookahead?.type !== TokenType.RightParenthese
+        ? this.ArgumentList()
+        : [];
+    this._eat(TokenType.RightParenthese);
+    return argumentList;
+  }
+
+  ArgumentList(): ASTNode[] {
+    const argumentsList: ASTNode[] = [];
+    do {
+      argumentsList.push(this.AssignmentExpression());
+    } while (
+      this._lookahead?.type === TokenType.Comma &&
+      this._eat(TokenType.Comma)
+    );
+    return argumentsList;
   }
 
   MemberExpression(): ASTNode {

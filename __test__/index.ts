@@ -14,12 +14,13 @@ import { unaryExpressionTests } from "./unary-expression-tests";
 import { iterationStatementTests } from "./iteration-statement-tests";
 import { functionDeclarationTests } from "./function-declaration-tests";
 import { memberExpressionTests } from "./member-expression-tests";
+import { callExpressionTests } from "./call-expression-tests";
 
 const parser = new Parser();
 
 // 手工测试
 (() => {
-  const program = `x.y[1] = 1;`;
+  const program = `;`;
   const ast = parser.parse(program);
   console.log(JSON.stringify(ast, null, 2));
 })();
@@ -41,6 +42,7 @@ const testList = [
   iterationStatementTests,
   functionDeclarationTests,
   memberExpressionTests,
+  callExpressionTests,
 ];
 const testFunc = (program: string, target: ASTRoot) => {
   const ast = parser.parse(program);
