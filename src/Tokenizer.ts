@@ -8,8 +8,11 @@ const SpecList: SpecificationList = [
 
   [/^;/, TokenType.Semicolon], // 分号
   [/^,/, TokenType.Comma], // 逗号
-  [/^{/, TokenType.LeftCurlyParenthese], // 花括号
-  [/^}/, TokenType.RightCurlyParenthese],
+  [/^\./, TokenType.Dot], // 点号
+  [/^{/, TokenType.LeftCurlyBracket], // 花括号
+  [/^}/, TokenType.RightCurlyBracket],
+  [/^\[/, TokenType.LeftBracket], // 中括号
+  [/^\]/, TokenType.RightBracket],
   [/^\(/, TokenType.LeftParenthese], // 小括号
   [/^\)/, TokenType.RightParenthese],
 

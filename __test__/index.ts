@@ -12,12 +12,14 @@ import { ifStatementTests } from "./if-statement-tests";
 import { relationalEqualityLogicalExpressionTests } from "./relational-equality-logical-expression-tests";
 import { unaryExpressionTests } from "./unary-expression-tests";
 import { iterationStatementTests } from "./iteration-statement-tests";
+import { functionDeclarationTests } from "./function-declaration-tests";
+import { memberExpressionTests } from "./member-expression-tests";
 
 const parser = new Parser();
 
 // 手工测试
 (() => {
-  const program = `function test(a, b, c){;}`;
+  const program = `x.y[1] = 1;`;
   const ast = parser.parse(program);
   console.log(JSON.stringify(ast, null, 2));
 })();
@@ -37,6 +39,8 @@ const testList = [
   relationalEqualityLogicalExpressionTests,
   unaryExpressionTests,
   iterationStatementTests,
+  functionDeclarationTests,
+  memberExpressionTests,
 ];
 const testFunc = (program: string, target: ASTRoot) => {
   const ast = parser.parse(program);

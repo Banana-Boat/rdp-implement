@@ -1,7 +1,7 @@
 import { ASTNodeType } from "../src/types";
 import { TestFunc } from "./types";
 
-const functionDeclarationTests = (testFunc: TestFunc) => {
+export const functionDeclarationTests = (testFunc: TestFunc) => {
   testFunc(
     `
     function volume(a, b, c) {
@@ -63,4 +63,6 @@ const functionDeclarationTests = (testFunc: TestFunc) => {
       ],
     }
   );
+
+  console.log("FunctionDeclaration tests passed");
 };

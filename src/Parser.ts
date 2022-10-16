@@ -39,7 +39,7 @@ class Parser {
     switch (this._lookahead?.type) {
       case TokenType.Semicolon:
         return this.EmptyStatement();
-      case TokenType.LeftCurlyParenthese:
+      case TokenType.LeftCurlyBracket:
         return this.BlockStatement();
       case TokenType.IfKeyword:
         return this.IfStatement();
@@ -67,12 +67,12 @@ class Parser {
   }
 
   BlockStatement(): ASTNode {
-    this._eat(TokenType.LeftCurlyParenthese);
+    this._eat(TokenType.LeftCurlyBracket);
     const body =
-      this._lookahead?.type !== TokenType.RightCurlyParenthese
-        ? this.StatementList(TokenType.RightCurlyParenthese)
+      this._lookahead?.type !== TokenType.RightCurlyBracket
+        ? this.StatementList(TokenType.RightCurlyBracket)
         : [];
-    this._eat(TokenType.RightCurlyParenthese);
+    this._eat(TokenType.RightCurlyBracket);
 
     return {
       type: ASTNodeType.BlockStatement,
@@ -285,7 +285,7 @@ class Parser {
       return {
         type: ASTNodeType.AssignmentExpression,
         operator: this.AssignmentOperator().value as string,
-        left: this._checkIdentifier(left),
+        left: this._checkValidAssignmentTarget(left),
         right: this.AssignmentExpression(),
       };
 
@@ -406,7 +406,39 @@ class Parser {
         argument: this.UnaryExpression(),
       };
 
-    return this.PrimaryExpression();
+    return this.MemberExpression();
+  }
+
+  MemberExpression(): ASTNode {
+    let object = this.PrimaryExpression();
+    while (
+      this._lookahead?.type === TokenType.Dot ||
+      this._lookahead?.type === TokenType.LeftBracket
+    ) {
+      if (this._lookahead.type === TokenType.Dot) {
+        this._eat(TokenType.Dot);
+        const property = this.Identifier();
+        object = {
+          type: ASTNodeType.MemberExpression,
+          object,
+          property,
+          computed: false,
+        };
+      }
+
+      if (this._lookahead.type === TokenType.LeftBracket) {
+        this._eat(TokenType.LeftBracket);
+        const property = this.Expression();
+        this._eat(TokenType.RightBracket);
+        object = {
+          type: ASTNodeType.MemberExpression,
+          object,
+          property,
+          computed: true,
+        };
+      }
+    }
+    return object;
   }
 
   PrimaryExpression(): ASTNode {
@@ -416,10 +448,10 @@ class Parser {
     switch (this._lookahead?.type) {
       case TokenType.LeftParenthese:
         return this.ParethesizedExpression();
-      default:
+      case TokenType.Identifier:
         return this.Identifier();
-      // default: // 存在疑问！
-      //   return this.PrimaryExpression();
+      default:
+        throw new SyntaxError("Invalid primary expression");
     }
   }
 
@@ -430,8 +462,11 @@ class Parser {
     return expression;
   }
 
-  _checkIdentifier(node: ASTNode): ASTNode {
-    if (node.type !== ASTNodeType.Identifier)
+  _checkValidAssignmentTarget(node: ASTNode): ASTNode {
+    if (
+      node.type !== ASTNodeType.Identifier &&
+      node.type !== ASTNodeType.MemberExpression
+    )
       throw new SyntaxError(`Invalid identifier: ${node.value}`);
 
     return node;

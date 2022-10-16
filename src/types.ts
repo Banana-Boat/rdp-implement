@@ -6,9 +6,12 @@ export enum TokenType {
 
   Semicolon = ";",
   Comma = ",",
+  Dot = ".",
 
-  LeftCurlyParenthese = "{",
-  RightCurlyParenthese = "}",
+  LeftCurlyBracket = "{",
+  RightCurlyBracket = "}",
+  LeftBracket = "[",
+  RightBracket = "]",
   LeftParenthese = "(",
   RightParenthese = ")",
 
@@ -68,6 +71,7 @@ export enum ASTNodeType {
   BinaryExpression = "BinaryExpression",
   LogicalExpression = "LogicalExpression",
   UnaryExpression = "UnaryExpression",
+  MemberExpression = "MemberExpression",
 
   NumericLiteral = "NumericalLiteral",
   StringLiteral = "StringLiteral",
@@ -83,6 +87,10 @@ export type ASTNode = {
 
   expression?: ASTNode; // ExpressionStatement
   body?: ASTNode[] | ASTNode; // BlockStatement | EmptyStatement | ForStatement | WhileStatement | DoWhileStatement | FunctionDeclaration
+
+  object?: ASTNode; // MemberExpression
+  property?: ASTNode; // MemberExpression
+  computed?: boolean; // MemberExpression
 
   params?: ASTNode[]; // FunctionDeclaration
 
