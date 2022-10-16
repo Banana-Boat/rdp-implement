@@ -17,7 +17,7 @@ const parser = new Parser();
 
 // 手工测试
 (() => {
-  const program = `for(;;);`;
+  const program = `function test(a, b, c){;}`;
   const ast = parser.parse(program);
   console.log(JSON.stringify(ast, null, 2));
 })();

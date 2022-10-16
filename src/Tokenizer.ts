@@ -34,6 +34,8 @@ const SpecList: SpecificationList = [
   [/^\bwhile\b/, TokenType.WhileKeyword], // 关键字 while
   [/^\bdo\b/, TokenType.DoKeyword], // 关键字 do
   [/^\bfor\b/, TokenType.ForKeyword], // 关键字 for
+  [/^\bfunction\b/, TokenType.FunctionKeyword], // 关键字 function
+  [/^\breturn\b/, TokenType.ReturnKeyword], // 关键字 return
 
   [/^\d+/, TokenType.Number], // 数字字面量，必须在标识符前！
 

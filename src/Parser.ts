@@ -43,12 +43,14 @@ class Parser {
         return this.BlockStatement();
       case TokenType.IfKeyword:
         return this.IfStatement();
+      case TokenType.FunctionKeyword:
+        return this.FunctionDeclaration();
+      case TokenType.ReturnKeyword:
+        return this.ReturnStatment();
       case TokenType.WhileKeyword:
-        return this.WhileStatement();
       case TokenType.DoKeyword:
-        return this.DoWhileStatement();
       case TokenType.ForKeyword:
-        return this.ForStatement();
+        return this.IterationStatement();
       case TokenType.LetKeyword:
         return this.VariableStatement();
       default:
@@ -96,6 +98,60 @@ class Parser {
       consequent,
       alternate,
     };
+  }
+
+  FunctionDeclaration(): ASTNode {
+    this._eat(TokenType.FunctionKeyword);
+    const name = this.Identifier();
+    this._eat(TokenType.LeftParenthese);
+    const params =
+      this._lookahead?.type !== TokenType.RightParenthese
+        ? this.FormalParametersList()
+        : [];
+    this._eat(TokenType.RightParenthese);
+    const body = this.BlockStatement();
+
+    return {
+      type: ASTNodeType.FunctionDeclaration,
+      name,
+      params,
+      body,
+    };
+  }
+
+  FormalParametersList(): ASTNode[] {
+    const params: ASTNode[] = [];
+    do {
+      params.push(this.Identifier());
+    } while (
+      this._lookahead?.type === TokenType.Comma &&
+      this._eat(TokenType.Comma)
+    );
+
+    return params;
+  }
+
+  ReturnStatment(): ASTNode {
+    this._eat(TokenType.ReturnKeyword);
+    const argument =
+      this._lookahead?.type !== TokenType.Semicolon ? this.Expression() : null;
+
+    this._eat(TokenType.Semicolon);
+    return {
+      type: ASTNodeType.ReturnStatement,
+      argument,
+    };
+  }
+
+  IterationStatement(): ASTNode {
+    switch (this._lookahead?.type) {
+      case TokenType.WhileKeyword:
+        return this.WhileStatement();
+      case TokenType.ForKeyword:
+        return this.ForStatement();
+      default:
+        return this.DoWhileStatement();
+    }
   }
 
   WhileStatement(): ASTNode {

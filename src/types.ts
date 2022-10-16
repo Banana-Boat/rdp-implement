@@ -33,6 +33,8 @@ export enum TokenType {
   WhileKeyword = "while",
   DoKeyword = "do",
   ForKeyword = "for",
+  FunctionKeyword = "function",
+  ReturnKeyword = "return",
 }
 
 // token类型定义
@@ -55,6 +57,8 @@ export enum ASTNodeType {
   ForStatement = "ForStatement",
   WhileStatement = "WhileStatement",
   DoWhileStatement = "DoWhileStatement",
+  FunctionDeclaration = "FunctionDeclaration",
+  ReturnStatement = "ReturnStatement",
 
   VariableStatement = "VariableStatement",
   VariableDeclaration = "VariableDeclaration",
@@ -78,7 +82,9 @@ export type ASTNode = {
   value?: number | string | null;
 
   expression?: ASTNode; // ExpressionStatement
-  body?: ASTNode[] | ASTNode; // BlockStatement | EmptyStatement | ForStatement | WhileStatement | DoWhileStatement
+  body?: ASTNode[] | ASTNode; // BlockStatement | EmptyStatement | ForStatement | WhileStatement | DoWhileStatement | FunctionDeclaration
+
+  params?: ASTNode[]; // FunctionDeclaration
 
   update?: ASTNode | null; // ForStatement
 
@@ -90,12 +96,12 @@ export type ASTNode = {
   id?: ASTNode; // VariableDeclaration
   init?: ASTNode | null; // VariableDeclaration | ForStatement
 
-  name?: string; // Identifier
+  name?: string | ASTNode; // Identifier | FunctionDeclaration
 
   left?: ASTNode; // BinaryExpression | AssignmentExpression | LogicalExpression
   right?: ASTNode; // BinaryExpression | AssignmentExpression | LogicalExpression
   operator?: string; // BinaryExpression | AssignmentExpression | LogicalExpression | UnaryExpression
-  argument?: ASTNode; // UnaryExpression
+  argument?: ASTNode | null; // UnaryExpression | FunctionDeclaration
 };
 
 // AST根结点 类型定义
