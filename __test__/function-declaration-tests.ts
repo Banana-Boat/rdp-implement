@@ -4,7 +4,7 @@ import { TestFunc } from "./types";
 export const functionDeclarationTests = (testFunc: TestFunc) => {
   testFunc(
     `
-    function volume(a, b, c) {
+    function volume(a = 1, b, c) {
       return a * b * c;
     }
   `,
@@ -19,8 +19,16 @@ export const functionDeclarationTests = (testFunc: TestFunc) => {
           },
           params: [
             {
-              type: ASTNodeType.Identifier,
-              name: "a",
+              type: ASTNodeType.AssignmentExpression,
+              operator: "=",
+              left: {
+                type: ASTNodeType.Identifier,
+                name: "a",
+              },
+              right: {
+                type: ASTNodeType.NumericLiteral,
+                value: 1,
+              },
             },
             {
               type: ASTNodeType.Identifier,

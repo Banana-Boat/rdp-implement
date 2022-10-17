@@ -43,6 +43,8 @@ class Parser {
         return this.BlockStatement();
       case TokenType.IfKeyword:
         return this.IfStatement();
+      case TokenType.ClassKeyword:
+        return this.ClassDeclaration();
       case TokenType.FunctionKeyword:
         return this.FunctionDeclaration();
       case TokenType.ReturnKeyword:
@@ -100,6 +102,28 @@ class Parser {
     };
   }
 
+  ClassDeclaration(): ASTNode {
+    this._eat(TokenType.ClassKeyword);
+    const id = this.Identifier();
+    const superClass =
+      this._lookahead?.type === TokenType.ExtendsKeyword
+        ? this.ExtendsClass()
+        : null;
+    const body = this.BlockStatement();
+
+    return {
+      type: ASTNodeType.ClassDeclaration,
+      id,
+      superClass,
+      body,
+    };
+  }
+
+  ExtendsClass(): ASTNode {
+    this._eat(TokenType.ExtendsKeyword);
+    return this.Identifier();
+  }
+
   FunctionDeclaration(): ASTNode {
     this._eat(TokenType.FunctionKeyword);
     const name = this.Identifier();
@@ -122,7 +146,7 @@ class Parser {
   FormalParametersList(): ASTNode[] {
     const params: ASTNode[] = [];
     do {
-      params.push(this.Identifier());
+      params.push(this.AssignmentExpression());
     } while (
       this._lookahead?.type === TokenType.Comma &&
       this._eat(TokenType.Comma)
@@ -410,12 +434,22 @@ class Parser {
   }
 
   CallMemberExpression(): ASTNode {
+    if (this._lookahead?.type === TokenType.SuperKeyword)
+      return this._CallExpression(this.Super());
+
     const member = this.MemberExpression();
 
     if (this._lookahead?.type === TokenType.LeftParenthese)
       return this._CallExpression(member);
 
     return member;
+  }
+
+  Super(): ASTNode {
+    this._eat(TokenType.SuperKeyword);
+    return {
+      type: ASTNodeType.Super,
+    };
   }
 
   _CallExpression(callee: ASTNode): ASTNode {
@@ -492,9 +526,31 @@ class Parser {
         return this.ParethesizedExpression();
       case TokenType.Identifier:
         return this.Identifier();
+      case TokenType.NewKeyword:
+        return this.NewExpression();
+      case TokenType.ThisKeyword:
+        return this.ThisExpression();
       default:
         throw new SyntaxError("Invalid primary expression");
     }
+  }
+
+  ThisExpression(): ASTNode {
+    this._eat(TokenType.ThisKeyword);
+    return {
+      type: ASTNodeType.ThisExpression,
+    };
+  }
+
+  NewExpression(): ASTNode {
+    this._eat(TokenType.NewKeyword);
+    const callee = this.MemberExpression();
+    const argumentList = this.Arguments();
+    return {
+      type: ASTNodeType.NewExpression,
+      callee,
+      arguments: argumentList,
+    };
   }
 
   ParethesizedExpression(): ASTNode {

@@ -38,6 +38,11 @@ export enum TokenType {
   ForKeyword = "for",
   FunctionKeyword = "function",
   ReturnKeyword = "return",
+  ClassKeyword = "class",
+  ExtendsKeyword = "extends",
+  NewKeyword = "new",
+  ThisKeyword = "this",
+  SuperKeyword = "super",
 }
 
 // token类型定义
@@ -62,6 +67,7 @@ export enum ASTNodeType {
   DoWhileStatement = "DoWhileStatement",
   FunctionDeclaration = "FunctionDeclaration",
   ReturnStatement = "ReturnStatement",
+  ClassDeclaration = "ClassDeclaration",
 
   VariableStatement = "VariableStatement",
   VariableDeclaration = "VariableDeclaration",
@@ -73,12 +79,15 @@ export enum ASTNodeType {
   UnaryExpression = "UnaryExpression",
   MemberExpression = "MemberExpression",
   CallExpression = "CallExpression",
+  NewExpression = "NewExpression",
+  ThisExpression = "ThisExpression",
 
   NumericLiteral = "NumericalLiteral",
   StringLiteral = "StringLiteral",
   BooleanLiteral = "BooleanLiteral",
   NullLiteral = "NullLiteral",
   Identifier = "Identifier",
+  Super = "Super",
 }
 
 // AST普通结点 类型定义
@@ -87,10 +96,12 @@ export type ASTNode = {
   value?: number | string | null;
 
   expression?: ASTNode; // ExpressionStatement
-  body?: ASTNode[] | ASTNode; // BlockStatement | EmptyStatement | ForStatement | WhileStatement | DoWhileStatement | FunctionDeclaration
+  body?: ASTNode[] | ASTNode; // BlockStatement | EmptyStatement | ForStatement | WhileStatement | DoWhileStatement | FunctionDeclaration | ClassDeclaration
 
-  callee?: ASTNode; // CallExpression
-  arguments?: ASTNode[]; // CallExpression
+  superClass?: ASTNode | null; // ClassDeclaration
+
+  callee?: ASTNode; // CallExpression | NewExpression
+  arguments?: ASTNode[]; // CallExpression | NewExpression
 
   object?: ASTNode; // MemberExpression
   property?: ASTNode; // MemberExpression
@@ -105,7 +116,7 @@ export type ASTNode = {
   alternate?: ASTNode | null; // IfStatement
 
   declarations?: ASTNode[]; // VariableStatement
-  id?: ASTNode; // VariableDeclaration
+  id?: ASTNode; // VariableDeclaration | ClassDeclaration
   init?: ASTNode | null; // VariableDeclaration | ForStatement
 
   name?: string | ASTNode; // Identifier | FunctionDeclaration

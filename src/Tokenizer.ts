@@ -39,6 +39,11 @@ const SpecList: SpecificationList = [
   [/^\bfor\b/, TokenType.ForKeyword], // 关键字 for
   [/^\bfunction\b/, TokenType.FunctionKeyword], // 关键字 function
   [/^\breturn\b/, TokenType.ReturnKeyword], // 关键字 return
+  [/^\bclass\b/, TokenType.ClassKeyword], // 关键字 class
+  [/^\bextends\b/, TokenType.ExtendsKeyword], // 关键字 extends
+  [/^\bsuper\b/, TokenType.SuperKeyword], // 关键字 super
+  [/^\bthis\b/, TokenType.ThisKeyword], // 关键字 this
+  [/^\bnew\b/, TokenType.NewKeyword], // 关键字 new
 
   [/^\d+/, TokenType.Number], // 数字字面量，必须在标识符前！
 

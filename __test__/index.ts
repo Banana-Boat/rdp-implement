@@ -15,6 +15,7 @@ import { iterationStatementTests } from "./iteration-statement-tests";
 import { functionDeclarationTests } from "./function-declaration-tests";
 import { memberExpressionTests } from "./member-expression-tests";
 import { callExpressionTests } from "./call-expression-tests";
+import { classDeclarationTests } from "./class-declaration-tests";
 
 const parser = new Parser();
 
@@ -43,6 +44,7 @@ const testList = [
   functionDeclarationTests,
   memberExpressionTests,
   callExpressionTests,
+  classDeclarationTests,
 ];
 const testFunc = (program: string, target: ASTRoot) => {
   const ast = parser.parse(program);
