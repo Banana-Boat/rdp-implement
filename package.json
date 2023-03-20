@@ -1,9 +1,8 @@
 {
-  "name": "letter-rdp-source",
+  "name": "rdp-implement",
   "version": "1.0.0",
-  "repository": "https://github.com/Banana-Boat/letter-rdp-source.git",
-  "author": "bananaboat <937499953@qq.com>",
-  "license": "MIT",
+  "repository": "",
+  "author": "",
   "scripts": {
     "test": "ts-node __test__/index.ts",
     "dev": "nodemon --watch src --watch __test__ --ext ts --exec 'npm run test'"
